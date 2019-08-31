@@ -7,12 +7,33 @@ import java.time.format.DateTimeFormatter;
 
 public class PicoPlacaPredictor {
 
+	/**
+	 * Main method: determines if a vehicle can circulate at a given date and hour
+	 * 
+	 * @param licPlate
+	 * @param date     format dd/MM/yyyy
+	 * @param hour     format HH:mm (0-24 hours)
+	 * @return true if vehicle can be on the road and false if can't
+	 */
 	public boolean predictPicoPlaca(String licPlate, String date, String hour) {
-		// TODO
-		return false;
+		int lastDigit = Character.getNumericValue(licPlate.charAt(licPlate.length() - 1));
+		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		LocalDate givenDate = LocalDate.parse(date, dateFormatter);
+		DayOfWeek PicoPlacaDay = getPicoPlacaDay(lastDigit);
+		DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+		LocalTime givenTime = LocalTime.parse(hour, timeFormatter);
+
+		if (givenDate.getDayOfWeek().equals(PicoPlacaDay)) {
+			return canCirculate(givenTime);
+		} else {
+			return true;
+		}
+
 	}
 
 	/**
+	 * determines the day of "Pico y Placa" based on the last digit of the license
+	 * plate
 	 * 
 	 * @param lastDigit of the license plate
 	 * @return the day of the week of "Pico y Placa" for the given digit
